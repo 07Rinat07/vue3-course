@@ -1,26 +1,39 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+
+<div>
+  <div>
+    <button @click="addlike" >Like</button>
+    <button @click="addDislike" >Dislike</button>
+  </div>
+  <div>Количество лайков: <strong>{{ likes }}</strong></div>
+  <div>Количество дизлайков: <strong>{{ dislikes }}</strong></div>
+</div>
+
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
 
+<script>
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
+  data() {
+    return {
+      likes: 0,
+      dislikes: 0,
+    }
+  },
+  methods: {
+    addlike() {
+      this.likes += 1;
+    },
+    addDislike() {
+      this.dislikes += 1;
+    }
   }
 }
+
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+
+
+<style scoped>
+
 </style>
