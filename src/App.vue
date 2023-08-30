@@ -2,12 +2,18 @@
 
   <div class="app">
     <h1>Страница с постами</h1>
-
-    <my-button @click="showDialog"
-    style="margin: 15px 0;"
+    <div class="app__btns">
+    <my-button
+        @click="showDialog"
     >
       Создать пользователя
     </my-button>
+      <my-select
+      v-model="selectedSort"
+      :options="sortOptions"
+        />
+    </div>
+
     <my-dialog v-model:show="dialogVisible">
       <post-form
           @create="createPost"
@@ -29,9 +35,11 @@ import PostList from "@/components/PostList.vue";
 import MyDialog from "@/components/UI/MyDialog.vue";
 import MyButton from "@/components/UI/MyButton.vue";
 import axios from "axios";
+import MySelect from "@/components/UI/MySelect.vue";
 
 export default {
   components: {
+    MySelect,
     MyButton,
     MyDialog,
     PostList, PostForm
@@ -42,7 +50,11 @@ export default {
       posts: [],
       dialogVisible: false,
       isPostsLoading: false,
-
+      selectedSort: '',
+      sortOptions: [
+        {value: 'title', name: 'По названию'},
+        {value: 'body', name: 'По содержимому'},
+      ]
     }
   },
   methods: {
@@ -61,11 +73,10 @@ export default {
         this.isPostsLoading = true;
         const response = await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=10');
        this.posts = response.data;
-       this.isPostsLoading = false;
       } catch (e) {
         alert('Error')
       } finally {
-
+        this.isPostsLoading = false;
       }
     }
   },
@@ -86,6 +97,12 @@ export default {
 
 .app {
   padding: 20px;
+}
+
+.app__btns {
+  margin: 15px 0;
+  display: flex;
+  justify-content: space-between;
 }
 
 </style>
