@@ -2,6 +2,7 @@
 
   <div class="app">
     <h1>Страница с постами</h1>
+
     <my-button @click="showDialog"
     style="margin: 15px 0;"
     >
@@ -43,6 +44,7 @@ export default {
         {id: 4, title: 'C++', body: 'Description  4'},
       ],
       dialogVisible: false,
+
     }
   },
   methods: {
