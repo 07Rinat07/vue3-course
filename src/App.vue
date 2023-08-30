@@ -6,21 +6,19 @@
     />
     <post-list
         :posts="posts"
-
+        @remove="removePost"
     />
   </div>
-
 </template>
 
 
 <script>
-import PostForm from "@/components/PostForm.vue";
+import PostForm from "./components/PostForm.vue";
 import PostList from "@/components/PostList.vue";
-import PostItem from "@/components/PostItem.vue";
 
 export default {
   components: {
-    PostList, PostForm, PostItem
+    PostList, PostForm
   },
 
   data() {
@@ -37,6 +35,10 @@ export default {
     createPost(post) {
       this.posts.push(post);
     },
+    removePost(post) {
+      this.posts = this.posts.filter(p => p.id !== post.id)
+    }
+
   }
 }
 
