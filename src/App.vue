@@ -30,7 +30,7 @@
         v-if="!isPostsLoading"
     />
     <div v-else>Идет загрузка</div>
-    <div class="observed"></div>
+    <div ref="observer" class="observed"></div>
 <!--    <div class="page__wrapper">-->
 <!--      <div v-for="pageNumber in totalPages"-->
 <!--           :key="pageNumber"-->
@@ -116,7 +116,7 @@ export default {
     },
     async loadMorePosts() {
       try {
-        this.isPostsLoading = true;
+        this.page += 1;
         const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
           params: {
             _page: this.page,
@@ -127,23 +127,26 @@ export default {
         this.posts = [...this.posts, ...response.data];
       } catch (e) {
         alert('Error')
-      } finally {
-        this.isPostsLoading = false;
       }
     }
   },
   mounted() {
     this.fetchPosts();
+    console.log(this.$refs.observer);
     const options = {
       rootMargin: '0px',
       threshold: 1.0
     }
     // eslint-disable-next-line no-unused-vars
-    const callback = function (entries, observer) {
+    const callback = (entries, observer) => {
       /* Content excerpted, show bellow */
+      if (entries[0].isIntersecting  && this.page < this.totalPages) {
+        this.loadMorePosts()
+      }
     };
     // eslint-disable-next-line no-unused-vars
    const  observer = new IntersectionObserver(callback, options);
+   observer.observe(this.$refs.observer);
   },
   computed: {
     sortedPosts() {
