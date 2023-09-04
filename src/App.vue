@@ -30,18 +30,19 @@
         v-if="!isPostsLoading"
     />
     <div v-else>Идет загрузка</div>
-    <div class="page__wrapper">
-      <div v-for="pageNumber in totalPages"
-           :key="pageNumber"
-           class="page"
-           :class="{
-             'current-page' : page === pageNumber
-           }"
-           @click="changePage(pageNumber)"
-      >
-        {{pageNumber}}
-      </div>
-    </div>
+    <div class="observed"></div>
+<!--    <div class="page__wrapper">-->
+<!--      <div v-for="pageNumber in totalPages"-->
+<!--           :key="pageNumber"-->
+<!--           class="page"-->
+<!--           :class="{-->
+<!--             'current-page' : page === pageNumber-->
+<!--           }"-->
+<!--           @click="changePage(pageNumber)"-->
+<!--      >-->
+<!--        {{pageNumber}}-->
+<!--      </div>-->
+<!--    </div>-->
   </div>
 </template>
 
@@ -91,10 +92,10 @@ export default {
     showDialog() {
       this.dialogVisible = true;
     },
-    changePage(pageNumber) {
-      this.page = pageNumber
-
-    },
+    // changePage(pageNumber) {
+    //   this.page = pageNumber
+    //
+    // },
 
     async fetchPosts() {
       try {
@@ -112,10 +113,37 @@ export default {
       } finally {
         this.isPostsLoading = false;
       }
+    },
+    async loadMorePosts() {
+      try {
+        this.isPostsLoading = true;
+        const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
+          params: {
+            _page: this.page,
+            _limit: this.limit
+          }
+        });
+        this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit)
+        this.posts = [...this.posts, ...response.data];
+      } catch (e) {
+        alert('Error')
+      } finally {
+        this.isPostsLoading = false;
+      }
     }
   },
   mounted() {
     this.fetchPosts();
+    const options = {
+      rootMargin: '0px',
+      threshold: 1.0
+    }
+    // eslint-disable-next-line no-unused-vars
+    const callback = function (entries, observer) {
+      /* Content excerpted, show bellow */
+    };
+    // eslint-disable-next-line no-unused-vars
+   const  observer = new IntersectionObserver(callback, options);
   },
   computed: {
     sortedPosts() {
@@ -127,9 +155,9 @@ export default {
   },
 
   watch: {
-    page() {
-      this.fetchPosts()
-    }
+    // page() {
+    //   this.fetchPosts()
+    // }
   }
 }
 
@@ -165,6 +193,11 @@ export default {
 
 .current-page {
   border: 2px solid teal;
+}
+
+.observed {      /* only for demo */
+  height: 30px;
+  background: green;
 }
 
 </style>
